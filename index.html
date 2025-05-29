@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="generator" content="WebSim GitHub Exporter">
+    <base href="https://LollyNinja.github.io/slimeywhimey/">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slime Physics Simulation</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #1a1a2e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            touch-action: none; /* Prevents pull-to-refresh and other touch gestures */
+        }
+        canvas {
+            display: block;
+            box-shadow: 0 0 20px rgba(0, 255, 170, 0.3);
+        }
+        .controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100; /* Ensure it's above the canvas */
+        }
+        .control-button {
+            padding: 10px 15px;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+            min-width: 150px; /* Ensure buttons have similar width */
+            text-align: center;
+        }
+        #addFoodButton {
+            background-color: #ffc107; /* Amber */
+        }
+        #addFoodButton:hover {
+            background-color: #ffa000; /* Darker amber */
+        }
+        #addFoodButton:active {
+            background-color: #ff8f00; /* Even darker for click */
+        }
+        #toggleSliceButton {
+            background-color: #4CAF50; /* Green */
+        }
+        #toggleSliceButton:hover {
+            background-color: #45a049; /* Darker Green */
+        }
+        #toggleSliceButton:active {
+            background-color: #3e8e41; /* Even darker for click */
+        }
+        #toggleSliceButton.slicing {
+            background-color: #f44336; /* Red when active */
+        }
+        #toggleSliceButton.slicing:hover {
+            background-color: #d32f2f; /* Darker Red */
+        }
+    </style>
+</head>
+<body>
+    <canvas id="slimeCanvas"></canvas>
+    <div class="controls">
+        <button id="addFoodButton" class="control-button">Add Food</button>
+        <button id="toggleSliceButton" class="control-button">Slice Mode: OFF</button>
+    </div>
+    <script type="importmap">
+    {
+        "imports": {
+            "slimejs": "./slime.js",
+            "./slime-class.js": "./slime-class.js",
+            "./slime-manager-class.js": "./slime-manager-class.js",
+            "./audio-manager.js": "./audio-manager.js",
+            "./food-manager.js": "./food-manager.js",
+            "./slice-handler.js": "./slice-handler.js",
+            "./event-handler.js": "./event-handler.js",
+            "./particle-manager.js": "./particle-manager.js",
+            "./slime-physics.js": "./slime-physics.js",
+            "./slime-rendering.js": "./slime-rendering.js",
+            "./slime-healing.js": "./slime-healing.js"
+        }
+    }
+    </script>
+    <script type="module">
+        import { SlimeManager } from './slime-manager-class.js';
+
+        let slimeManager;
+        
+        window.addEventListener('load', () => {
+            const canvas = document.getElementById('slimeCanvas');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            slimeManager = new SlimeManager(canvas);
+
+            const addFoodButton = document.getElementById('addFoodButton');
+            addFoodButton.addEventListener('click', () => {
+                if (slimeManager) {
+                    slimeManager.spawnFood(); // This now calls foodManager.spawnFood()
+                }
+            });
+
+            const toggleSliceButton = document.getElementById('toggleSliceButton');
+            toggleSliceButton.addEventListener('click', () => {
+                if (slimeManager) {
+                    slimeManager.toggleSliceMode(); // This now calls sliceHandler.toggleSliceMode()
+                    // Access the sliceMode state from the sliceHandler via slimeManager
+                    const currentSliceMode = slimeManager.sliceHandler.sliceMode;
+                    toggleSliceButton.textContent = currentSliceMode ? 'Slice Mode: ON' : 'Slice Mode: OFF';
+                    toggleSliceButton.classList.toggle('slicing', currentSliceMode);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
